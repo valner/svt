@@ -10,7 +10,7 @@ do
         for PROC in 1 2 4 8
         do
             FILENAME=$1"_"$M"_"$EPS"_"$PROC
-            mpisubmit -w 00:30:00 -n $PROC -stdout $OUTPUT_DIR/$FILENAME.out -stderr $OUTPUT_DIR/$FILENAME.err $BINARY $M $EPS
+            mpisubmit -w 00:30:00 -n $PROC -m vn -stdout $OUTPUT_DIR/$FILENAME.out -stderr $OUTPUT_DIR/$FILENAME.err $BINARY $M $EPS
         done
     done
 done
