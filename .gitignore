@@ -1,0 +1,8 @@
+# Ignore keys because it is private
+keys/*
+# Ignore vpn because it is private
+vpn/*
+
+# Don't ignore notice files
+!keys/notice.txt
+!vpn/notice.txt
