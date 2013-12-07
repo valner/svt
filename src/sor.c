@@ -63,13 +63,11 @@ INT main(INT argc, CHAR *argv[]) {
           
           if (argc >1){
               m=atoi(argv[1]);
-              if ( (m<128)||(m>MAX_M) )
               m=MAX_M;
           }  
           
           if (argc >2 ) {
               TOL= atof(argv[2]);
-              if ( TOL< EPS)
               TOL=EPS;
           }
           
@@ -101,7 +99,9 @@ INT main(INT argc, CHAR *argv[]) {
 
       replicate(mp, m, vt, vnew);            /* vnew = vt */
       neighbors(k, p, MPI_PROC_NULL, &below, &above);   /* domain borders */
-
+      
+      REAL ro = 1.0 - pow (PI / (2 * (m + 1)), 2);
+      REAL w = 0;
       while (gdel > TOL) {  /* iterate until error below threshold */
         iter++;             /* increment iteration counter */
 
@@ -111,7 +111,9 @@ INT main(INT argc, CHAR *argv[]) {
           return (0);       /* nonconvergent solution */
         }
 /* compute new solution according to the Jacobi scheme */
-        update_jacobi(mp, m, vt, vnew, &del);  /* compute new vt */
+        /*update_jacobi(mp, m, vt, vnew, &del);  [> compute new vt <]*/
+        update_sor(mp, m, vt, vnew, &del, w);
+        update_w(&w, ro);
         if(iter%INCREMENT == 0) {
           MPI_Allreduce( &del, &gdel, 1, MPI_DOUBLE,
                MPI_MAX, MPI_COMM_WORLD );  /* find global max error */
@@ -199,12 +201,11 @@ INT write_file( INT m, INT n, REAL **u, INT k, INT p ) {
    (void) sprintf(file, "%s.%d", filename, k); /* create output file */
    fd = fopen(file, "w");
    ij = 0;
-   for (j = 0; j <=n+1; j++) {
-     for (i = 0; i <=m+1; i++) {
+   for (j = 1; j <=n; j++) {
+     for (i = 1; i <=m; i++) {
        fprintf(fd, "%11.4f ", u[i][j]);
-       if ((ij+1)%per_line == 0) fprintf(fd, "\n");
-       ij++;
      }
+     fprintf(fd, "\n");
    }
    fprintf(fd, "\n");
    fclose(fd);
@@ -328,15 +329,34 @@ void neighbors(INT k, INT p, INT UNDEFINED, INT *below, INT *above) {
  * below     - (OUTPUT) neighbor thread below k (usually k-1)   *
  * above     - (OUTPUT) neighbor thread above k (usually k+1)   *
  ****************************************************************/
-  if(k == 0) {
-    *below = UNDEFINED;     /* tells MPI not to perform send/recv */
-    *above = k+1;
-  } else if(k == p-1) {
-    *below = k-1;
-    *above = UNDEFINED;     /* tells MPI not to perform send/recv */
-  } else {
-    *below = k-1;
-    *above = k+1;
-  }
+    *below = k != 0? k - 1 : UNDEFINED;
+    *above = k != p - 1? k + 1 : UNDEFINED;
 }
 
+REAL update_w (REAL* w, REAL ro)
+{
+    REAL oldw = *w? *w : 1;
+
+    *w = 1 / ( 1 - pow(ro, 2)*oldw / 4);
+}
+
+
+INT update_sor( INT m, INT n, REAL **u, REAL **unew, REAL *del, REAL w) {
+  INT i, j;
+  *del = 0.0;
+  for (i = 1; i <=m; i++) {
+    for (j = 1; j <=n; j++) {
+      unew[i][j] = ( u[i  ][j+1] + u[i+1][j  ] +
+                     u[i-1][j  ] + u[i  ][j-1] )*0.25;
+      unew[i][j] = w * unew[i][j] + (1 - w) * u[i][j];
+      *del += fabs(unew[i][j] - u[i][j]);    /* find local max error */
+    }
+  }
+  for (i = 1; i <=m; i++) {
+    for (j = 1; j <=n; j++) {
+      u[i][j] = unew[i][j];
+    }
+  }
+      
+  return (0);
+}
