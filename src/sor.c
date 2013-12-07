@@ -65,12 +65,10 @@ INT main(INT argc, CHAR *argv[]) {
           
           if (argc >1){
               m=atoi(argv[1]);
-              m=MAX_M;
           }  
           
           if (argc >2 ) {
               TOL= atof(argv[2]);
-              TOL=EPS;
           }
           
           fprintf(OUTPUT,"Size of interior points, m :\n");
