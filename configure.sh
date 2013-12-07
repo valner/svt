@@ -36,9 +36,9 @@ echo -n "Login for lomonosov [default: edu-vmk13-studvalner47_251659]? "
 read lom_login
 if [ $lom_login ];
 then
-    echo "RG_BG_LOGIN=$lom_login" >> $CONFIG
+    echo "LOM_LOGIN=$lom_login" >> $CONFIG
 else
-    echo "RG_BG_LOGIN=edu-vmk13-studvalner47_251659" >> $CONFIG
+    echo "LOM_LOGIN=edu-vmk13-studvalner47_251659" >> $CONFIG
 fi
 
 echo ""
@@ -49,13 +49,13 @@ if [ $terminal ];
 then
     if command -v $terminal > /dev/null 2>&1; 
     then
-        echo "RG_BG_LOGIN=$terminal" >> $CONFIG
+        echo "TERMINAL=$terminal" >> $CONFIG
     else
         echo "Bad terminal command: $terminal. Setting default"
         echo "TERMINAL=xterm" >> $CONFIG
     fi
 else
-    echo "RG_BG_LOGIN=xterm" >> $CONFIG
+    echo "TERMINAL=xterm" >> $CONFIG
 fi
 
 
