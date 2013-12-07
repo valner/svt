@@ -117,8 +117,9 @@ INT main(INT argc, CHAR *argv[]) {
         update_sor(mp, m, vt, vnew, &del, w);
         update_w(&w, ro);
         if(iter%INCREMENT == 0) {
+            gdel = 0;
           MPI_Allreduce( &del, &gdel, 1, MPI_DOUBLE,
-               MPI_MAX, MPI_COMM_WORLD );  /* find global max error */
+               MPI_SUM, MPI_COMM_WORLD );  /* find global max error */
           if( k == 0) {
             fprintf(OUTPUT,"iter,del,gdel: %6d, %lf %lf\n",iter,del,gdel);
           }
