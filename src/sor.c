@@ -29,6 +29,8 @@ void init_array( INT m, INT n, REAL **a);
 void bc( INT m, INT n, REAL **a, INT k, INT p );
 INT write_file( INT m, INT n, REAL **u, INT k, INT p );
 INT update_jacobi( INT m, INT n, REAL **u, REAL **unew, REAL *gdel);
+INT update_sor( INT m, INT n, REAL **u, REAL **unew, REAL *gdel, REAL w);
+REAL update_w(REAL* w, REAL ro);
 INT replicate( INT m, INT n, REAL **u, REAL **ut );
 INT transpose( INT m, INT n, REAL **u, REAL **ut );
 void neighbors(INT k, INT p, INT UNDEFINED, INT *below, INT *above);
