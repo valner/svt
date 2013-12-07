@@ -14,7 +14,7 @@ fi
 $TERMINAL -e "cd $ROOT/vpn/; openvpn --config cmc.ovpn" >/dev/null 2>&1 &
 echo "Waiting 10 second for vpn connection established..."
 sleep 10
-scp  -i $KEY $ROOT/script/regatta/* $ROOT/src/*  $HOST:/gpfs/data/vmk-edu-2013/$RG_BG_LOGIN  
+scp  -i $KEY $ROOT/script/bluegene/* $ROOT/src/*  $HOST:/gpfs/data/vmk-edu-2013/$RG_BG_LOGIN  
 
 $TERMINAL -e "ssh $HOST -i $KEY" >/dev/null 2>&1 &
 
