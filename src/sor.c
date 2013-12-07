@@ -142,7 +142,7 @@ INT main(INT argc, CHAR *argv[]) {
       }
 
       free(v); free(vt); free(vnew); /* release allocated arrays  */
-      
+      MPI_Finalize();  
       return (0);
 }
 INT update_bc_2( INT mp, INT m, REAL **vt, INT k, INT below, INT above ) {
