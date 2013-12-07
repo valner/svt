@@ -6,3 +6,5 @@ vpn/*
 # Don't ignore notice files
 !keys/notice.txt
 !vpn/notice.txt
+# Ignore generated config
+svt.conf
