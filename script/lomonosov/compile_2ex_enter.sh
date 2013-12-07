@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ssh compiler < ./compiler_2ex.sh 
+ssh compiler < ./compile_2ex.sh 
