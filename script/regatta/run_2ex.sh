@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e 
 
 readonly OUTPUT_DIR="ex2_out"
 BINARY=$1

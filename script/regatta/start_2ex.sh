@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # Compile and run jobs
 # Use: start <source file>
