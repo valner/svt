@@ -112,7 +112,12 @@ INT main(INT argc, CHAR *argv[]) {
         }
 /* compute new solution according to the Jacobi scheme */
         /*update_jacobi(mp, m, vt, vnew, &del);  [> compute new vt <]*/
-        update_sor(mp, m, vt, vnew, &del, w);
+        update_sor(mp, m, vt, vnew, &del, w, 0 );
+        update_bc_2( mp, m, vt, k, below, above); /* update b.c. */
+
+        update_sor(mp, m, vt, vnew, &del, w, 1);
+        update_bc_2( mp, m, vt, k, below, above); /* update b.c. */
+
         update_w(&w, ro);
         if(iter%INCREMENT == 0) {
             gdel = 0;
@@ -122,7 +127,6 @@ INT main(INT argc, CHAR *argv[]) {
             fprintf(OUTPUT,"iter,del,gdel: %6d, %lf %lf\n",iter,del,gdel);
           }
         }
-        update_bc_2( mp, m, vt, k, below, above); /* update b.c. */
       }
       if (k == 0) {
 	  finish=MPI_Wtime();
@@ -336,21 +340,24 @@ void neighbors(INT k, INT p, INT UNDEFINED, INT *below, INT *above) {
 
 REAL update_w (REAL* w, REAL ro)
 {
-    REAL oldw = *w? *w : 1;
+    REAL oldw = *w? *w : 2;
 
     *w = 1 / ( 1 - pow(ro, 2)*oldw / 4);
 }
 
 
-INT update_sor( INT m, INT n, REAL **u, REAL **unew, REAL *del, REAL w) {
+INT update_sor( INT m, INT n, REAL **u, REAL **unew, REAL *del, REAL w, INT isRed) {
   INT i, j;
   *del = 0.0;
   for (i = 1; i <=m; i++) {
     for (j = 1; j <=n; j++) {
+        if ( (i+j) %2 == isRed)
+        {
       unew[i][j] = ( u[i  ][j+1] + u[i+1][j  ] +
                      u[i-1][j  ] + u[i  ][j-1] )*0.25;
       unew[i][j] = w * unew[i][j] + (1 - w) * u[i][j];
       *del += fabs(unew[i][j] - u[i][j]);    /* find local max error */
+        }
     }
   }
   for (i = 1; i <=m; i++) {
