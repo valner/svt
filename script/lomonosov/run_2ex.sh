@@ -2,7 +2,10 @@
 
 readonly OUTPUT_DIR="2ex_out"
 BINARY=$1
-
+if [ ! -d $OUTPUD_DIR ];
+then
+mkdir $OUTPUT_DIR
+fi
 for M in 512 1024
 do
     for EPS in "0.01" "0.001"
