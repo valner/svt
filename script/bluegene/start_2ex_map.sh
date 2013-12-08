@@ -10,7 +10,7 @@ do
     for EPS in "0.01" "0.001"
     do
         PROC=512
-        FILENAME=$1"_"$M"_"$EPS"_"$PROC_randmap
+        FILENAME=$1"_"$M"_"$EPS"_"$PROC"_randmap"
         mpisubmit.bg -e \"MPIRUN_MAPFILE=$MAPFILE\" -m vn -w 00:30:00 -n $PROC -stdout $OUTPUT_DIR/$FILENAME.out -stderr $OUTPUT_DIR/$FILENAME.err $BINARY $M $EPS
     done
 done
