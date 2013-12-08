@@ -2,7 +2,7 @@
 readonly MAPFILE="map.txt"
 BINARY=`echo $1 | sed  -r 's/(.*)\..*/\1/g'`
 ./compile_2ex.sh $1 $BINARY
-./generate_map $MAPFILE
+./generate_map.sh 
 readonly OUTPUT_DIR="ex2_out"
 BINARY=$1
 
